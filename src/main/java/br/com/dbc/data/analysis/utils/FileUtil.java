@@ -22,7 +22,8 @@ public class FileUtil {
 		
 		try {
 			File path = new File(directory);
-			File files[] = path.listFiles();
+			// Filter for .dat only
+			File files[] = path.listFiles((dir, name) -> name.toLowerCase().endsWith(".dat"));
 
 			for(File file : files) {
 				String filePath = file.getAbsolutePath();
