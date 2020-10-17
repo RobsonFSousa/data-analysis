@@ -1,17 +1,12 @@
 package br.com.dbc.data.analysis.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class Customer {
 	
-	@Id
     private String cnpj;
 	
 	private String name;
 	
-	private double businessArea;
+	private String businessArea;
 
 	//Getters and Setters
 	public String getCnpj() {
@@ -30,11 +25,11 @@ public class Customer {
 		this.name = name;
 	}
 
-	public double getBusinessArea() {
+	public String getBusinessArea() {
 		return businessArea;
 	}
 
-	public void setBusinessArea(double businessArea) {
+	public void setBusinessArea(String businessArea) {
 		this.businessArea = businessArea;
 	}
 	

@@ -1,20 +1,17 @@
 package br.com.dbc.data.analysis.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-@Entity
 public class SaleItem {
-
-	@Id
-	@GeneratedValue
+	
 	private long id;
 	
 	private double quantity;
 	
 	private double price;
 
+	// Methods
+	public Double GetTotal() {
+		return quantity * price;
+	}
 	
 	//Getters and Setters
 	public long getId() {

@@ -2,26 +2,24 @@ package br.com.dbc.data.analysis.models;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-@Entity
 public class Sale {
 
-	@Id
     private long id;
 	
-	@OneToMany(cascade = CascadeType.ALL,
-	           orphanRemoval = true)
 	private List<SaleItem> saleItens;
 	
-	@OneToOne(cascade = CascadeType.ALL,
-	           orphanRemoval = true)
-	private Salesman salesman;
+	private Salesman salesman; 
 
+	// Methods
+	public Double GetTotal() {
+		Double total = 0.0;
+		
+		for (SaleItem saleItem : saleItens) {
+			total += saleItem.GetTotal();
+		}
+		
+		return total;
+	}
 	
 	// Getters and Setters
 	public long getId() {
@@ -46,5 +44,9 @@ public class Sale {
 
 	public void setSalesman(Salesman salesman) {
 		this.salesman = salesman;
+	}
+	
+	public String GetSalesmanName() {
+		return salesman.getName();
 	}
 }
