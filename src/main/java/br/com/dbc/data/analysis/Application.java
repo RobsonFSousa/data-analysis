@@ -32,7 +32,6 @@ public class Application {
 		for (FileDBC fileDBC : files) {
 			Sale sale = fileDBC.GetMostExpensiveSale();
 			Salesman salesman = fileDBC.GetWorstSalesman();
-			System.out.println(sale);
 		}
 		
 		return String.format("Hello %s!", name);
