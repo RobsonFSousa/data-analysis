@@ -9,13 +9,19 @@ public class Sale {
 	private List<SaleItem> saleItens;
 	private Salesman salesman;
 	
+	/** 
+	* Class constructor.
+	*/
 	public Sale(long id, List<SaleItem> saleItens, Salesman salesman) {
 		this.id = id;
 		this.saleItens = saleItens;
 		this.salesman = salesman;
 	}
 
-	// Methods
+	/**
+	 * Calculate the sale total. 
+	 * @return
+	 */
 	public Double GetTotal() {
 		BigDecimal total = new BigDecimal(0);
 		

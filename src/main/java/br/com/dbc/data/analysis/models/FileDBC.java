@@ -14,14 +14,10 @@ import java.util.stream.Collectors;
 public class FileDBC {
 	
 	private long id;
-	
 	private String path;
-	
-	List<Salesman> salesmans;
-	
-	List<Customer> customers;
-	
-	List<Sale> sales;
+	private List<Salesman> salesmans;
+	private List<Customer> customers;
+	private List<Sale> sales;
 	
 	// Methods
 	public Sale GetMostExpensiveSale() {
@@ -31,6 +27,10 @@ public class FileDBC {
 		return clonedSales.get(0);
 	}
 	
+	/**
+	 * Process the worst salesman of the sale.
+	 * @return
+	 */
 	public Salesman GetWorstSalesman() {
 		Map<String, BigDecimal> totalSales = new HashMap<String, BigDecimal>();
 		Map<String, List<Sale>> result = sales.stream().collect(Collectors.groupingBy(Sale::GetSalesmanName));
@@ -50,7 +50,7 @@ public class FileDBC {
 		return worstSalesman.get();
 	}
 	
-	public static Map.Entry<String, BigDecimal> GetWorstSalesman(Map<String, BigDecimal> hasmap){
+	private static Map.Entry<String, BigDecimal> GetWorstSalesman(Map<String, BigDecimal> hasmap){
 		List<Map.Entry<String, BigDecimal> > list = 
 	               new LinkedList<Map.Entry<String, BigDecimal> >(hasmap.entrySet());
 		

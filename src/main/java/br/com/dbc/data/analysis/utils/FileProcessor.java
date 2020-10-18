@@ -1,8 +1,15 @@
 package br.com.dbc.data.analysis.utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.InvalidParameterException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +40,17 @@ public class FileProcessor {
 			.concat(File.separator)
 			.concat("in")
 			.concat(File.separator);
+	private final String OUTPUT_FILES_PATH = System.getProperty("user.home")
+			.concat(File.separator)
+			.concat("data")
+			.concat(File.separator)
+			.concat("out")
+			.concat(File.separator);
 	
+	/**
+	 * Process the input files.
+	 * @return
+	 */
 	public List<FileDBC> ProcessFilesDBCFromDirectory() {
 		filesDBC = new ArrayList<FileDBC>();
 		
@@ -83,13 +100,49 @@ public class FileProcessor {
 			fileDBC.setCustomers(customers);
 			fileDBC.setSales(sales);
 			
-			filesDBC.add(fileDBC);
+			try {
+				GenerateOutputFile(OUTPUT_FILES_PATH, fileDBC);
+				filesDBC.add(fileDBC);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		});
 		
 		
 		return filesDBC;
 	}
 	
+	/**
+	 * Generate the output files.
+	 * @param fileDBC
+	 * @param output
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean GenerateOutputFile(String output, FileDBC fileDBC) throws IOException {
+		Files.createDirectories(Paths.get(output));
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(output.concat(new SimpleDateFormat("ddMMyyyy HHmmssSSS").format(new Date())).concat(".done.dat")));
+	    writer.write("File Path: " + fileDBC.getPath());
+	    writer.newLine();
+	    writer.write("Customers Quantity: " + fileDBC.getCustomers().size());
+	    writer.newLine();
+	    writer.write("Salesmans Quantity: " + fileDBC.getSalesmans().size());
+	    writer.newLine();
+	    writer.write("Most Expensive Sale ID: " + fileDBC.GetMostExpensiveSale().getId());
+	    writer.newLine();
+	    writer.write("Wrost Salesman: " + fileDBC.GetWorstSalesman().getName());
+	    
+	    writer.close();
+		
+		return true;
+	}
+	
+	/**
+	 * Generate the report with the summary of the processed files.
+	 * @return
+	 */
 	public Report GenerateReport() {
 		if (filesDBC != null && filesDBC.size() > 0) {
 			

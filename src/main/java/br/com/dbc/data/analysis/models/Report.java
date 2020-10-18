@@ -6,7 +6,9 @@ public class Report {
 	
 	private List<ProcessedFileSummary> processedFilesSummary;
 	
-	// Constructor
+	/** 
+	* Class constructor.
+	*/
 	public Report(List<ProcessedFileSummary> processedFilesSummary) {
 		this.processedFilesSummary = processedFilesSummary;
 	}
