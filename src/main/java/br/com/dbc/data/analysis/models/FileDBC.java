@@ -1,5 +1,6 @@
 package br.com.dbc.data.analysis.models;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,31 +32,31 @@ public class FileDBC {
 	}
 	
 	public Salesman GetWorstSalesman() {
-		Map<String, Double> totalSales = new HashMap<String, Double>();
+		Map<String, BigDecimal> totalSales = new HashMap<String, BigDecimal>();
 		Map<String, List<Sale>> result = sales.stream().collect(Collectors.groupingBy(Sale::GetSalesmanName));
 		
 		result.forEach((salesmanName, sales) -> {
-			Double total = 0.0;
+			BigDecimal total = new BigDecimal(0);
 			
 			for (Sale sale : sales) {
-				total += sale.GetTotal();
+				total = total.add(new BigDecimal(sale.GetTotal()));
 			}
 			totalSales.put(salesmanName, total);
 		}); 
 		
-		Map.Entry<String, Double> worstSalesmanEntry = GetWorstSalesman(totalSales);
+		Map.Entry<String, BigDecimal> worstSalesmanEntry = GetWorstSalesman(totalSales);
 		Optional<Salesman> worstSalesman = salesmans.stream().filter(s -> s.getName().equals(worstSalesmanEntry.getKey())).findFirst();
 		
 		return worstSalesman.get();
 	}
 	
-	public static Map.Entry<String, Double> GetWorstSalesman(Map<String, Double> hasmap){
-		List<Map.Entry<String, Double> > list = 
-	               new LinkedList<Map.Entry<String, Double> >(hasmap.entrySet());
+	public static Map.Entry<String, BigDecimal> GetWorstSalesman(Map<String, BigDecimal> hasmap){
+		List<Map.Entry<String, BigDecimal> > list = 
+	               new LinkedList<Map.Entry<String, BigDecimal> >(hasmap.entrySet());
 		
-		Collections.sort(list, new Comparator<Map.Entry<String, Double>>() {
-			public int compare(Map.Entry<String, Double> o1,
-							   Map.Entry<String, Double> o2) {
+		Collections.sort(list, new Comparator<Map.Entry<String, BigDecimal>>() {
+			public int compare(Map.Entry<String, BigDecimal> o1,
+							   Map.Entry<String, BigDecimal> o2) {
 				return (o1.getValue()).compareTo(o2.getValue());
 			}
 		});

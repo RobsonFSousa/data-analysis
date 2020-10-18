@@ -1,12 +1,19 @@
 package br.com.dbc.data.analysis.models;
 
+import java.math.BigDecimal;
+
 public class Salesman {
 	
     private String cpf;
-
 	private String name;
+	private BigDecimal salary;
 	
-	private double salary;
+	// Constructor
+	public Salesman(String cpf, String name, BigDecimal salary) {
+		this.cpf = cpf;
+		this.name = name;
+		this.salary = salary;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -24,7 +31,7 @@ public class Salesman {
 			return false;
 		return true;
 	}
-
+	
 	// Getters and Setters
 	public String getCpf() {
 		return cpf;
@@ -42,11 +49,11 @@ public class Salesman {
 		this.name = name;
 	}
 
-	public double getSalary() {
+	public BigDecimal getSalary() {
 		return salary;
 	}
 
-	public void setSalary(double salary) {
+	public void setSalary(BigDecimal salary) {
 		this.salary = salary;
 	}
 

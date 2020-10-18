@@ -1,6 +1,8 @@
 package br.com.dbc.data.analysis.utils;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,11 @@ import br.com.dbc.data.analysis.models.FileDBC;
 import br.com.dbc.data.analysis.models.Sale;
 import br.com.dbc.data.analysis.models.SaleItem;
 import br.com.dbc.data.analysis.models.Salesman;
+import br.com.dbc.data.analysis.factories.AbstractFactory;
+import br.com.dbc.data.analysis.factories.CustomerFactory;
+import br.com.dbc.data.analysis.factories.SaleFactory;
+import br.com.dbc.data.analysis.factories.SaleItemFactory;
+import br.com.dbc.data.analysis.factories.SalesmanFactory;
 import br.com.dbc.data.analysis.models.Customer;
 
 @Component
@@ -19,7 +26,12 @@ public class FileProcessor {
 	@Autowired
 	FileUtil fileUtil;
 	
-	private final String FILES_PATH = System.getProperty("user.home") + File.separator + "data" + File.separator +	"in" + File.separator;
+	private final String FILES_PATH = System.getProperty("user.home")
+			.concat(File.separator)
+			.concat("data")
+			.concat(File.separator)
+			.concat("in")
+			.concat(File.separator);
 	
 	public List<FileDBC> GetFilesDBCFromDirectory() {
 		List<FileDBC> filesDBC = new ArrayList<FileDBC>();
@@ -35,30 +47,34 @@ public class FileProcessor {
 			List<Sale> sales = new ArrayList<Sale>();
 					
 			for (String line : lines) {
+				AbstractFactory abstractFactory;
 				String[] splitted = line.replaceAll("(\\r\\n|\\n|\\r)", "").split("ç");
 				switch (splitted[0]) {
 					// Salesman
 					case "001":
-						Salesman salesman = GetSalesmanFromLine(splitted);
+						abstractFactory = new SalesmanFactory();
+						Salesman salesman = (Salesman) abstractFactory.createInstance(splitted);
 						salesmans.add(salesman);
 						
 						break;
 						
 					// Customer
 					case "002":
-						Customer customer = GetCustomerFromLine(splitted);
+						abstractFactory = new CustomerFactory();
+						Customer customer = (Customer) abstractFactory.createInstance(splitted);
 						customers.add(customer);
 						
 						break;
 						
 					// Sale
 					case "003":
-						Sale sale = GetSaleFromLine(splitted);
+						abstractFactory = new SaleFactory();
+						Sale sale = (Sale) abstractFactory.createInstance(splitted);
 						sales.add(sale);
 						break;
 	
 					default:
-						break;
+						throw new InvalidParameterException("Invalid line: ".concat(line));
 				}
 			}
 			
@@ -71,56 +87,6 @@ public class FileProcessor {
 		
 		
 		return filesDBC;
-	}
-	
-	private Salesman GetSalesmanFromLine(String[] lineSplitted) {
-		Salesman salesman = new Salesman();
-		
-		salesman.setCpf(lineSplitted[1]);
-		salesman.setName(lineSplitted[2]);
-		salesman.setSalary(new Double(lineSplitted[3]));
-		
-		return salesman;
-	}
-	
-	private Customer GetCustomerFromLine(String[] lineSplitted) {
-		Customer customer = new Customer();
-		
-		customer.setCnpj(lineSplitted[1]);
-		customer.setName(lineSplitted[2]);
-		customer.setBusinessArea(lineSplitted[3]);
-		
-		return customer;
-	}
-	
-	private Sale GetSaleFromLine(String[] lineSplitted) {
-		Sale sale = new Sale();
-		Salesman salesman = new Salesman();
-		salesman.setName(lineSplitted[3]);
-		
-		sale.setId(Long.parseLong(lineSplitted[1]));
-		sale.setSaleItens(GetSaleItensFromLine(lineSplitted[2].replace("[", "").replace("]", "").split(",")));
-		sale.setSalesman(salesman);
-		
-		return sale;
-	}
-	
-	private List<SaleItem> GetSaleItensFromLine(String[] lineSplitted) {
-		List<SaleItem> saleItens = new ArrayList<SaleItem>();
-		
-		for (String line : lineSplitted) {
-			SaleItem saleItem = new SaleItem();
-			
-			String[] splittedItem = line.split("-");
-			
-			saleItem.setId(Long.parseLong(splittedItem[0]));
-			saleItem.setPrice(Double.parseDouble(splittedItem[1]));
-			saleItem.setQuantity(Double.parseDouble(splittedItem[2]));
-			
-			saleItens.add(saleItem);
-		}
-		
-		return saleItens;
 	}
 
 }

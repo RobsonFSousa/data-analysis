@@ -1,24 +1,29 @@
 package br.com.dbc.data.analysis.models;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Sale {
 
     private long id;
-	
 	private List<SaleItem> saleItens;
+	private Salesman salesman;
 	
-	private Salesman salesman; 
+	public Sale(long id, List<SaleItem> saleItens, Salesman salesman) {
+		this.id = id;
+		this.saleItens = saleItens;
+		this.salesman = salesman;
+	}
 
 	// Methods
 	public Double GetTotal() {
-		Double total = 0.0;
+		BigDecimal total = new BigDecimal(0);
 		
 		for (SaleItem saleItem : saleItens) {
-			total += saleItem.GetTotal();
+			total = total.add(saleItem.GetTotal());
 		}
 		
-		return total;
+		return total.doubleValue();
 	}
 	
 	// Getters and Setters

@@ -1,16 +1,23 @@
 package br.com.dbc.data.analysis.models;
 
+import java.math.BigDecimal;
+
 public class SaleItem {
 	
 	private long id;
+	private BigDecimal quantity;
+	private BigDecimal price;
 	
-	private double quantity;
-	
-	private double price;
+	// Constructor
+	public SaleItem(long id, BigDecimal quantity, BigDecimal price) {
+		this.id = id;
+		this.quantity = quantity;
+		this.price = price;
+	}
 
 	// Methods
-	public Double GetTotal() {
-		return quantity * price;
+	public BigDecimal GetTotal() {
+		return quantity.multiply(price);
 	}
 	
 	//Getters and Setters
@@ -22,19 +29,19 @@ public class SaleItem {
 		this.id = id;
 	}
 
-	public double getQuantity() {
+	public BigDecimal getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(double quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		this.quantity = quantity;
 	}
 
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 }

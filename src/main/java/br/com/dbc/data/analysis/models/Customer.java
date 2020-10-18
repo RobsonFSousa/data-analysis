@@ -3,10 +3,15 @@ package br.com.dbc.data.analysis.models;
 public class Customer {
 	
     private String cnpj;
-	
 	private String name;
-	
 	private String businessArea;
+	
+	// Constructor
+	public Customer(String cnpj, String name, String businessArea) {
+		this.cnpj = cnpj;
+		this.name = name;
+		this.businessArea = businessArea;
+	}
 
 	//Getters and Setters
 	public String getCnpj() {
