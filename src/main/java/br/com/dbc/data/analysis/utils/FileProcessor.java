@@ -1,7 +1,6 @@
 package br.com.dbc.data.analysis.utils;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.dbc.data.analysis.models.FileDBC;
+import br.com.dbc.data.analysis.models.ProcessedFileSummary;
+import br.com.dbc.data.analysis.models.Report;
 import br.com.dbc.data.analysis.models.Sale;
-import br.com.dbc.data.analysis.models.SaleItem;
 import br.com.dbc.data.analysis.models.Salesman;
 import br.com.dbc.data.analysis.factories.AbstractFactory;
 import br.com.dbc.data.analysis.factories.CustomerFactory;
 import br.com.dbc.data.analysis.factories.SaleFactory;
-import br.com.dbc.data.analysis.factories.SaleItemFactory;
 import br.com.dbc.data.analysis.factories.SalesmanFactory;
 import br.com.dbc.data.analysis.models.Customer;
 
@@ -26,17 +25,19 @@ public class FileProcessor {
 	@Autowired
 	FileUtil fileUtil;
 	
-	private final String FILES_PATH = System.getProperty("user.home")
+	List<FileDBC> filesDBC;
+	
+	private final String INPUT_FILES_PATH = System.getProperty("user.home")
 			.concat(File.separator)
 			.concat("data")
 			.concat(File.separator)
 			.concat("in")
 			.concat(File.separator);
 	
-	public List<FileDBC> GetFilesDBCFromDirectory() {
-		List<FileDBC> filesDBC = new ArrayList<FileDBC>();
+	public List<FileDBC> ProcessFilesDBCFromDirectory() {
+		filesDBC = new ArrayList<FileDBC>();
 		
-		Map<String, List<String>> files = fileUtil.loadAllFiles(FILES_PATH);
+		Map<String, List<String>> files = fileUtil.loadAllFiles(INPUT_FILES_PATH);
 		
 		files.forEach((filePath, lines) -> {
 			FileDBC fileDBC = new FileDBC();
@@ -87,6 +88,27 @@ public class FileProcessor {
 		
 		
 		return filesDBC;
+	}
+	
+	public Report GenerateReport() {
+		if (filesDBC != null && filesDBC.size() > 0) {
+			
+			List<ProcessedFileSummary> processedFilesSummary = new ArrayList<ProcessedFileSummary>();
+			
+			for (FileDBC fileDBC : filesDBC) {
+				ProcessedFileSummary processedFileSummary = new ProcessedFileSummary(fileDBC.getPath(),
+						fileDBC.getCustomers().size(),
+						fileDBC.getSalesmans().size(),
+						fileDBC.GetMostExpensiveSale().getId(), 
+						fileDBC.GetWorstSalesman());
+				
+				processedFilesSummary.add(processedFileSummary);
+			}
+			
+			return new Report(processedFilesSummary);
+		}
+		
+		return null;
 	}
 
 }
