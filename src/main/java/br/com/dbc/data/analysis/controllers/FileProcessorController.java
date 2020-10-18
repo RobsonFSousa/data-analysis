@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.dbc.data.analysis.models.Report;
+import br.com.dbc.data.analysis.utils.Consts;
 import br.com.dbc.data.analysis.utils.FileProcessor;
 
 @RestController
@@ -18,7 +19,7 @@ public class FileProcessorController {
 	 */
 	@GetMapping("/process-files")
 	public Report hello() {
-		fileProcessor.ProcessFilesDBCFromDirectory();
+		fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		return fileProcessor.GenerateReport();
 	}
 }
