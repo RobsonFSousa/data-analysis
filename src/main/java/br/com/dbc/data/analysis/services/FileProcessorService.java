@@ -1,4 +1,4 @@
-package br.com.dbc.data.analysis.utils;
+package br.com.dbc.data.analysis.services;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -22,6 +22,8 @@ import br.com.dbc.data.analysis.models.ProcessedFileSummary;
 import br.com.dbc.data.analysis.models.Report;
 import br.com.dbc.data.analysis.models.Sale;
 import br.com.dbc.data.analysis.models.Salesman;
+import br.com.dbc.data.analysis.utils.Consts;
+import br.com.dbc.data.analysis.utils.FileUtil;
 import br.com.dbc.data.analysis.factories.AbstractFactory;
 import br.com.dbc.data.analysis.factories.CustomerFactory;
 import br.com.dbc.data.analysis.factories.SaleFactory;
@@ -29,11 +31,11 @@ import br.com.dbc.data.analysis.factories.SalesmanFactory;
 import br.com.dbc.data.analysis.models.Customer;
 
 @Component
-public class FileProcessor {
+public class FileProcessorService {
 	@Autowired
 	private FileUtil fileUtil;
 	private List<FileDBC> filesDBC;
-	private static Logger logger = LoggerFactory.getLogger(FileProcessor.class);
+	private static Logger logger = LoggerFactory.getLogger(FileProcessorService.class);
 	
 	
 	/**
@@ -133,7 +135,7 @@ public class FileProcessor {
 		    
 		    writer.close();
 		    
-		    logger.info("Output file successfully generating in path: ".concat(fileDBC.getPath()));
+		    logger.info("Output file successfully generated in path: ".concat(fileDBC.getPath()));
 			
 			return true;	
 		}
@@ -164,7 +166,7 @@ public class FileProcessor {
 				processedFilesSummary.add(processedFileSummary);
 			}
 			
-			logger.info("Report successfully generating.");
+			logger.info("Report successfully generated.");
 			return new Report(processedFilesSummary);
 		}
 		

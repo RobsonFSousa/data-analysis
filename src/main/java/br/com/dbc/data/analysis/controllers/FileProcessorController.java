@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.dbc.data.analysis.models.Report;
+import br.com.dbc.data.analysis.services.FileProcessorService;
 import br.com.dbc.data.analysis.utils.Consts;
-import br.com.dbc.data.analysis.utils.FileProcessor;
 
 @RestController
 public class FileProcessorController {
 	@Autowired
-	FileProcessor fileProcessor;
+	FileProcessorService fileProcessorService;
 	
 	/**
 	 * Mapping for process files.
@@ -22,7 +22,7 @@ public class FileProcessorController {
 	 */
 	@GetMapping("/process-files")
 	public Report hello() throws IOException {
-		fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
-		return fileProcessor.GenerateReport();
+		fileProcessorService.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
+		return fileProcessorService.GenerateReport();
 	}
 }
