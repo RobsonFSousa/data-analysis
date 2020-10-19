@@ -3,15 +3,10 @@ package br.com.dbc.data.analysis;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,37 +35,37 @@ class ApplicationTests {
 	}
 	
 	@Test
-	void ProcessFilesDBCFromDirectory_ShoudProcessFile() {
+	void ProcessFilesDBCFromDirectory_ShoudProcessFile() throws IOException {
 		List<FileDBC> filesDBC = fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		Assertions.assertEquals(filesDBC.size(), 1);
 	}
 	
 	@Test
-	void ProcessFilesDBCFromDirectory_ShoudGetCustomersQuantity() {
+	void ProcessFilesDBCFromDirectory_ShoudGetCustomersQuantity() throws IOException {
 		List<FileDBC> filesDBC = fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		Assertions.assertEquals(filesDBC.get(0).getCustomers().size(), 2);
 	}
 	
 	@Test
-	void ProcessFilesDBCFromDirectory_ShoudGetSalesmanQuantity() {
+	void ProcessFilesDBCFromDirectory_ShoudGetSalesmanQuantity() throws IOException{
 		List<FileDBC> filesDBC = fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		Assertions.assertEquals(filesDBC.get(0).getSalesmans().size(), 2);
 	}
 	
 	@Test
-	void ProcessFilesDBCFromDirectory_ShoudGetMostExpensiveSaleId() {
+	void ProcessFilesDBCFromDirectory_ShoudGetMostExpensiveSaleId() throws IOException{
 		List<FileDBC> filesDBC = fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		Assertions.assertEquals(filesDBC.get(0).GetMostExpensiveSale().getId(), 10);
 	}
 	
 	@Test
-	void ProcessFilesDBCFromDirectory_ShoudGetWorstSalesmanName() {
+	void ProcessFilesDBCFromDirectory_ShoudGetWorstSalesmanName() throws IOException{
 		List<FileDBC> filesDBC = fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		Assertions.assertEquals(filesDBC.get(0).GetWorstSalesman().getName(), "Paulo");
 	}
 	
 	@Test
-	void ProcessFilesDBCFromDirectory_ShoudGenerateReport() {
+	void ProcessFilesDBCFromDirectory_ShoudGenerateReport() throws IOException{
 		fileProcessor.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
 		Report report = fileProcessor.GenerateReport();
 		

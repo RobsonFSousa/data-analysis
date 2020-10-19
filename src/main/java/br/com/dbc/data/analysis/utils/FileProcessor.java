@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,18 +31,22 @@ import br.com.dbc.data.analysis.models.Customer;
 @Component
 public class FileProcessor {
 	@Autowired
-	FileUtil fileUtil;
+	private FileUtil fileUtil;
+	private List<FileDBC> filesDBC;
+	private static Logger logger = LoggerFactory.getLogger(FileProcessor.class);
 	
-	List<FileDBC> filesDBC;
 	
 	/**
 	 * Process the input files.
 	 * @return
 	 */
-	public List<FileDBC> ProcessFilesDBCFromDirectory(String directory) {
+	public List<FileDBC> ProcessFilesDBCFromDirectory(String directory) throws IOException {
+		logger.info("Initializing batch processing from path: ".concat(directory));
+		
 		filesDBC = new ArrayList<FileDBC>();
 		
 		Map<String, List<String>> files = fileUtil.loadAllFiles(directory);
+		logger.info("Files loaded.");
 		
 		files.forEach((filePath, lines) -> {
 			FileDBC fileDBC = new FileDBC();
@@ -78,6 +84,9 @@ public class FileProcessor {
 						break;
 	
 					default:
+						logger.error("Error when trying to read file: ".concat(fileDBC.getPath()));
+						logger.error("Error in line: ".concat(line));
+						
 						throw new InvalidParameterException("Invalid line: ".concat(line));
 				}
 			}
@@ -86,12 +95,10 @@ public class FileProcessor {
 			fileDBC.setCustomers(customers);
 			fileDBC.setSales(sales);
 			
-			try {
-				GenerateOutputFile(Consts.OUTPUT_FILES_PATH, fileDBC);
-				filesDBC.add(fileDBC);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			GenerateOutputFile(Consts.OUTPUT_FILES_PATH, fileDBC);
+			filesDBC.add(fileDBC);
+			
+			logger.info("File successfully processed: ".concat(fileDBC.getPath()));
 			
 		});
 		
@@ -106,23 +113,35 @@ public class FileProcessor {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean GenerateOutputFile(String output, FileDBC fileDBC) throws IOException {
-		Files.createDirectories(Paths.get(output));
+	public boolean GenerateOutputFile(String output, FileDBC fileDBC) {
+		try {
+			String filePath = output.concat(new SimpleDateFormat("ddMMyyyy HHmmssSSS").format(new Date())).concat(".done.dat");
+			logger.info("Generating output file: ".concat(filePath));
+			
+			Files.createDirectories(Paths.get(output));
+			
+			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+		    writer.write("File Path: " + fileDBC.getPath());
+		    writer.newLine();
+		    writer.write("Customers Quantity: " + fileDBC.getCustomers().size());
+		    writer.newLine();
+		    writer.write("Salesmans Quantity: " + fileDBC.getSalesmans().size());
+		    writer.newLine();
+		    writer.write("Most Expensive Sale ID: " + fileDBC.GetMostExpensiveSale().getId());
+		    writer.newLine();
+		    writer.write("Wrost Salesman: " + fileDBC.GetWorstSalesman().getName());
+		    
+		    writer.close();
+		    
+		    logger.info("Output file successfully generating in path: ".concat(fileDBC.getPath()));
+			
+			return true;	
+		}
+		catch (IOException ex) {
+			logger.error("Error when trying to read file: ".concat(fileDBC.getPath()));
+		}
 		
-		BufferedWriter writer = new BufferedWriter(new FileWriter(output.concat(new SimpleDateFormat("ddMMyyyy HHmmssSSS").format(new Date())).concat(".done.dat")));
-	    writer.write("File Path: " + fileDBC.getPath());
-	    writer.newLine();
-	    writer.write("Customers Quantity: " + fileDBC.getCustomers().size());
-	    writer.newLine();
-	    writer.write("Salesmans Quantity: " + fileDBC.getSalesmans().size());
-	    writer.newLine();
-	    writer.write("Most Expensive Sale ID: " + fileDBC.GetMostExpensiveSale().getId());
-	    writer.newLine();
-	    writer.write("Wrost Salesman: " + fileDBC.GetWorstSalesman().getName());
-	    
-	    writer.close();
-		
-		return true;
+		return false;
 	}
 	
 	/**
@@ -131,6 +150,7 @@ public class FileProcessor {
 	 */
 	public Report GenerateReport() {
 		if (filesDBC != null && filesDBC.size() > 0) {
+			logger.info("Generating Report...");
 			
 			List<ProcessedFileSummary> processedFilesSummary = new ArrayList<ProcessedFileSummary>();
 			
@@ -144,9 +164,11 @@ public class FileProcessor {
 				processedFilesSummary.add(processedFileSummary);
 			}
 			
+			logger.info("Report successfully generating.");
 			return new Report(processedFilesSummary);
 		}
 		
+		logger.info("No data to generating Report.");
 		return null;
 	}
 
