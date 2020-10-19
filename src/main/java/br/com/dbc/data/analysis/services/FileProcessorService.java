@@ -1,14 +1,8 @@
 package br.com.dbc.data.analysis.services;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.InvalidParameterException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +91,7 @@ public class FileProcessorService {
 			fileDBC.setCustomers(customers);
 			fileDBC.setSales(sales);
 			
-			GenerateOutputFile(Consts.OUTPUT_FILES_PATH, fileDBC);
+			fileUtil.GenerateOutputFile(Consts.OUTPUT_FILES_PATH, fileDBC);
 			filesDBC.add(fileDBC);
 			
 			logger.info("File successfully processed: ".concat(fileDBC.getPath()));
@@ -106,44 +100,6 @@ public class FileProcessorService {
 		
 		
 		return filesDBC;
-	}
-	
-	/**
-	 * Generate the output files.
-	 * @param fileDBC
-	 * @param output
-	 * @return
-	 * @throws IOException
-	 */
-	public boolean GenerateOutputFile(String output, FileDBC fileDBC) {
-		try {
-			String filePath = output.concat(new SimpleDateFormat("ddMMyyyy HHmmssSSS").format(new Date())).concat(".done.dat");
-			logger.info("Generating output file: ".concat(filePath));
-			
-			Files.createDirectories(Paths.get(output));
-			
-			BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-		    writer.write("File Path: " + fileDBC.getPath());
-		    writer.newLine();
-		    writer.write("Customers Quantity: " + fileDBC.getCustomers().size());
-		    writer.newLine();
-		    writer.write("Salesmans Quantity: " + fileDBC.getSalesmans().size());
-		    writer.newLine();
-		    writer.write("Most Expensive Sale ID: " + fileDBC.GetMostExpensiveSale().getId());
-		    writer.newLine();
-		    writer.write("Wrost Salesman: " + fileDBC.GetWorstSalesman().getName());
-		    
-		    writer.close();
-		    
-		    logger.info("Output file successfully generated in path: ".concat(fileDBC.getPath()));
-			
-			return true;	
-		}
-		catch (IOException ex) {
-			logger.error("Error when trying to read file: ".concat(fileDBC.getPath()));
-		}
-		
-		return false;
 	}
 	
 	/**

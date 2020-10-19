@@ -17,6 +17,7 @@ import br.com.dbc.data.analysis.models.FileDBC;
 import br.com.dbc.data.analysis.models.Report;
 import br.com.dbc.data.analysis.services.FileProcessorService;
 import br.com.dbc.data.analysis.utils.Consts;
+import br.com.dbc.data.analysis.utils.FileUtil;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -27,6 +28,8 @@ class ApplicationTests {
 	@Autowired
 	private FileProcessorService fileProcessorService;
 	
+	@Autowired
+	private FileUtil fileUtil;
 
 	@Test
 	void ProcessFilesDBCFromDirectory_ShouldRespondsHTTP200() throws Exception {
@@ -79,7 +82,7 @@ class ApplicationTests {
 	void ProcessFilesDBCFromDirectory_ShoudGenerateOutputFile() throws IOException {
 		
 		List<FileDBC> filesDBC = fileProcessorService.ProcessFilesDBCFromDirectory(Consts.INPUT_FILES_PATH);
-		boolean reportGenerated = fileProcessorService.GenerateOutputFile(Consts.OUTPUT_FILES_PATH, filesDBC.get(0));
+		boolean reportGenerated = fileUtil.GenerateOutputFile(Consts.OUTPUT_FILES_PATH, filesDBC.get(0));
 		Assertions.assertTrue(reportGenerated);
 	}
 
