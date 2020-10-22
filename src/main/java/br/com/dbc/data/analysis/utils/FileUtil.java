@@ -1,7 +1,6 @@
 package br.com.dbc.data.analysis.utils;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,9 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,32 +23,25 @@ public class FileUtil {
 	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 	
 	/**
-	 * Load all .bat files from directory.
+	 * Load file from a path
 	 * @param directory
 	 * @return
 	 */
-	public Map<String, List<String>> loadAllFiles(String directory)
+	public List<String> loadFile(String filePath)
 	{
-		Map<String, List<String>> filesMap = new HashMap<String, List<String>>();
+		List<String> list = new ArrayList<String>();
 		
 		try {
-			File path = new File(directory);
-			// Filter for .dat only
-			File files[] = path.listFiles((dir, name) -> name.toLowerCase().endsWith(".dat"));
-
-			for(File file : files) {
-				String filePath = file.getAbsolutePath();
-				String lines = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.ISO_8859_1);
-				List<String> list = new ArrayList<String>(Arrays.asList(lines.split("\n")));
-				
-				filesMap.put(filePath, list);
-	      }
+			String lines = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.ISO_8859_1);
+			list = new ArrayList<String>(Arrays.asList(lines.split("\n")));
+			
+			return list;
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return filesMap;
+		return list;
 	}
 	
 	/**
@@ -81,12 +71,14 @@ public class FileUtil {
 		    
 		    writer.close();
 		    
-		    logger.info("Output file successfully generated in path: ".concat(fileDBC.getPath()));
+		    logger.info("Output file successfully generated in path: ".concat(filePath));
+			
 			
 			return true;	
 		}
 		catch (IOException ex) {
-			logger.error("Error when trying to read file: ".concat(fileDBC.getPath()));
+			logger.error("Error when trying to generate output files.");
+			ex.printStackTrace();
 		}
 		
 		return false;
