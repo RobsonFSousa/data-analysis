@@ -1,24 +1,50 @@
 package br.com.dbc.data.analysis.models;
 
-import java.util.List;
-
 public class Report {
 	
-	private List<ProcessedFileSummary> processedFilesSummary;
+	private long customersQuantity;
+	private long salesmansQuantity;
+	private long mostExpensiveSaleId;
+	private Salesman wrostSalesman;
 	
-	/** 
-	* Class constructor.
-	*/
-	public Report(List<ProcessedFileSummary> processedFilesSummary) {
-		this.processedFilesSummary = processedFilesSummary;
+	
+	/**
+	 * Constructor.
+	 * @param customersQuantity
+	 * @param salesmansQuantity
+	 * @param mostExpensiveSaleId
+	 * @param wrostSalesman
+	 */
+	public Report(long customersQuantity, long salesmansQuantity, long mostExpensiveSaleId, Salesman wrostSalesman) {
+		this.customersQuantity = customersQuantity;
+		this.salesmansQuantity = salesmansQuantity;
+		this.mostExpensiveSaleId = mostExpensiveSaleId;
+		this.wrostSalesman = wrostSalesman;
 	}
-
+	
 	// Getters and Setters
-	public List<ProcessedFileSummary> getProcessedFilesSummary() {
-		return processedFilesSummary;
+	public long getCustomersQuantity() {
+		return customersQuantity;
 	}
-
-	public void setProcessedFilesSummary(List<ProcessedFileSummary> processedFilesSummary) {
-		this.processedFilesSummary = processedFilesSummary;
+	public void setCustomersQuantity(long customersQuantity) {
+		this.customersQuantity = customersQuantity;
+	}
+	public long getSalesmansQuantity() {
+		return salesmansQuantity;
+	}
+	public void setSalesmansQuantity(long salesmansQuantity) {
+		this.salesmansQuantity = salesmansQuantity;
+	}
+	public long getMostExpensiveSaleId() {
+		return mostExpensiveSaleId;
+	}
+	public void setMostExpensiveSaleId(long mostExpensiveSaleId) {
+		this.mostExpensiveSaleId = mostExpensiveSaleId;
+	}
+	public Salesman getWrostSalesman() {
+		return wrostSalesman;
+	}
+	public void setWrostSalesman(Salesman wrostSalesman) {
+		this.wrostSalesman = wrostSalesman;
 	}
 }

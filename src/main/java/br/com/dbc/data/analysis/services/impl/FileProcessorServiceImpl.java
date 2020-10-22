@@ -3,20 +3,15 @@ package br.com.dbc.data.analysis.services.impl;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.dbc.data.analysis.models.FileDBC;
-import br.com.dbc.data.analysis.models.ProcessedFileSummary;
-import br.com.dbc.data.analysis.models.Report;
 import br.com.dbc.data.analysis.models.Sale;
 import br.com.dbc.data.analysis.models.Salesman;
 import br.com.dbc.data.analysis.services.FileProcessorService;
-import br.com.dbc.data.analysis.utils.FileUtil;
 import br.com.dbc.data.analysis.factories.AbstractFactory;
 import br.com.dbc.data.analysis.factories.CustomerFactory;
 import br.com.dbc.data.analysis.factories.SaleFactory;
@@ -25,28 +20,21 @@ import br.com.dbc.data.analysis.models.Customer;
 
 @Service
 public class FileProcessorServiceImpl implements FileProcessorService {
-	@Autowired
-	private FileUtil fileUtil;
 	private static Logger logger = LoggerFactory.getLogger(FileProcessorServiceImpl.class);
-	
 	
 	/**
 	 * 
 	 */
-	public FileDBC processDBCFile(String filePath) {
-		logger.info("Initializing batch processing from path: ".concat(filePath));
-		
-		List<String> file = fileUtil.loadFile(filePath);
-		logger.info("Files loaded.");
-		
+	public FileDBC processDBCFile(String filePath, List<String> lines) {
 		FileDBC fileDBC = new FileDBC();
-		fileDBC.setPath(filePath);
+		
+		logger.info("Initializing batch processing from path: {}", filePath);
 		
 		List<Salesman> salesmans = new ArrayList<Salesman>();
 		List<Customer> customers = new ArrayList<Customer>();
 		List<Sale> sales = new ArrayList<Sale>();
 				
-		for (String line : file) {
+		for (String line : lines) {
 			AbstractFactory abstractFactory;
 			String[] splitted = line.replaceAll("(\\r\\n|\\n|\\r)", "").split("ç");
 			switch (splitted[0]) {
@@ -74,8 +62,8 @@ public class FileProcessorServiceImpl implements FileProcessorService {
 					break;
 
 				default:
-					logger.error("Error when trying to read file: ".concat(fileDBC.getPath()));
-					logger.error("Error in line: ".concat(line));
+					logger.error("Error when trying to read file: {}", filePath);
+					logger.error("Error in line: {}", line);
 					
 					throw new InvalidParameterException("Invalid line: ".concat(line));
 			}
@@ -85,34 +73,9 @@ public class FileProcessorServiceImpl implements FileProcessorService {
 		fileDBC.setCustomers(customers);
 		fileDBC.setSales(sales);
 		
-		logger.info("File successfully processed: ".concat(fileDBC.getPath()));
+		logger.info("File successfully processed: {}", filePath);
 		
 		return fileDBC;
 	}
-	
-	/*
-	public Report GenerateReport() {
-		if (filesDBC != null && filesDBC.size() > 0) {
-			logger.info("Generating Report...");
-			
-			List<ProcessedFileSummary> processedFilesSummary = new ArrayList<ProcessedFileSummary>();
-			
-			for (FileDBC fileDBC : filesDBC) {
-				ProcessedFileSummary processedFileSummary = new ProcessedFileSummary(fileDBC.getPath(),
-						fileDBC.getCustomers().size(),
-						fileDBC.getSalesmans().size(),
-						fileDBC.GetMostExpensiveSale().getId(), 
-						fileDBC.GetWorstSalesman());
-				
-				processedFilesSummary.add(processedFileSummary);
-			}
-			
-			logger.info("Report successfully generated.");
-			return new Report(processedFilesSummary);
-		}
-		
-		logger.info("No data to generating Report.");
-		return null;
-	}*/
 
 }

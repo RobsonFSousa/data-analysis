@@ -1,15 +1,15 @@
-package br.com.dbc.data.analysis.utils;
+package br.com.dbc.data.analysis.consts;
 
 import java.io.File;
 
-public abstract class Consts {
-	public final static String INPUT_FILES_PATH = System.getProperty("user.home")
+public abstract class DefaultFilePath {
+	public final static String INPUT = System.getProperty("user.home")
 			.concat(File.separator)
 			.concat("data")
 			.concat(File.separator)
 			.concat("in")
 			.concat(File.separator);
-	public final static String OUTPUT_FILES_PATH = System.getProperty("user.home")
+	public final static String OUTPUT = System.getProperty("user.home")
 			.concat(File.separator)
 			.concat("data")
 			.concat(File.separator)

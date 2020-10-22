@@ -1,69 +1,68 @@
 package br.com.dbc.data.analysis;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.io.IOException;
+import java.util.List;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 
+import br.com.dbc.data.analysis.consts.DefaultFilePath;
 import br.com.dbc.data.analysis.models.FileDBC;
 import br.com.dbc.data.analysis.models.Report;
-import br.com.dbc.data.analysis.services.impl.FileProcessorServiceImpl;
-import br.com.dbc.data.analysis.utils.Consts;
-import br.com.dbc.data.analysis.utils.FileUtil;
+import br.com.dbc.data.analysis.services.FileProcessorService;
+import br.com.dbc.data.analysis.services.FileService;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 class ApplicationTests {
-	@Autowired
-    private MockMvc mockMvc;
 	
 	@Autowired
-	private FileProcessorServiceImpl fileProcessorService;
+	private FileProcessorService fileProcessorService;
 	
 	@Autowired
-	private FileUtil fileUtil;
-
-	@Test
-	void ProcessFilesDBCFromDirectory_ShouldRespondsHTTP200() throws Exception {
-		mockMvc.perform(get("/process-files"))
-		.andExpect(status().isOk());
+	private FileService fileService;
+	
+	private List<String> fileLines;
+	private final String filePath = DefaultFilePath.INPUT.concat("sale.dat");
+	
+	@Before
+	public void setUp() throws IOException {
+		fileLines = fileService.loadFile(filePath);
 	}
 	
 	@Test
 	void ProcessFilesDBCFromDirectory_ShoudProcessFile() throws IOException {
-		FileDBC filesDBC = fileProcessorService.processDBCFile(Consts.INPUT_FILES_PATH);
-		Assertions.assertNotNull(filesDBC.getSales());
+		FileDBC filesDBC = fileProcessorService.processDBCFile(filePath, fileLines);
+		
+		Assertions.assertNotNull(filesDBC);
 	}
 	
 	@Test
 	void ProcessFilesDBCFromDirectory_ShoudGetCustomersQuantity() throws IOException {
-		FileDBC fileDBC = fileProcessorService.processDBCFile(Consts.INPUT_FILES_PATH);
+		FileDBC fileDBC = fileProcessorService.processDBCFile(filePath, fileLines);
 		Assertions.assertEquals(fileDBC.getCustomers().size(), 2);
 	}
 	
 	@Test
 	void ProcessFilesDBCFromDirectory_ShoudGetSalesmanQuantity() throws IOException{
-		FileDBC fileDBC = fileProcessorService.processDBCFile(Consts.INPUT_FILES_PATH);
+		FileDBC fileDBC = fileProcessorService.processDBCFile(filePath, fileLines);
 		Assertions.assertEquals(fileDBC.getSalesmans().size(), 2);
 	}
 	
 	@Test
 	void ProcessFilesDBCFromDirectory_ShoudGetMostExpensiveSaleId() throws IOException{
-		FileDBC fileDBC = fileProcessorService.processDBCFile(Consts.INPUT_FILES_PATH);
-		Assertions.assertEquals(fileDBC.GetMostExpensiveSale().getId(), 10);
+		FileDBC fileDbc = fileProcessorService.processDBCFile(filePath, fileLines);
+		long mostExpensiveSaleId = fileService.getMostExpensiveSale(fileDbc).getId();
+		Assertions.assertEquals(mostExpensiveSaleId, 10);
 	}
 	
 	@Test
 	void ProcessFilesDBCFromDirectory_ShoudGetWorstSalesmanName() throws IOException{
-		FileDBC fileDBC = fileProcessorService.processDBCFile(Consts.INPUT_FILES_PATH);
-		Assertions.assertEquals(fileDBC.GetWorstSalesman().getName(), "Paulo");
+		FileDBC fileDbc = fileProcessorService.processDBCFile(filePath, fileLines);
+		String worstSalesman = fileService.getWorstSalesman(fileDbc).getName();
+		Assertions.assertEquals(worstSalesman, "Paulo");
 	}
 	
 	/*@Test
@@ -80,8 +79,8 @@ class ApplicationTests {
 	@Test
 	void ProcessFilesDBCFromDirectory_ShoudGenerateOutputFile() throws IOException {
 		
-		FileDBC fileDBC = fileProcessorService.processDBCFile(Consts.INPUT_FILES_PATH);
-		boolean reportGenerated = fileUtil.GenerateOutputFile(Consts.OUTPUT_FILES_PATH, fileDBC);
+		FileDBC fileDBC = fileProcessorService.processDBCFile(filePath, fileLines);
+		boolean reportGenerated = fileService.generateOutputFile(fileDBC, DefaultFilePath.OUTPUT);
 		Assertions.assertTrue(reportGenerated);
 	}
 
