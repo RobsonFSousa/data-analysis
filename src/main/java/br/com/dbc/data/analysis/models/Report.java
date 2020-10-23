@@ -22,6 +22,12 @@ public class Report {
 		this.wrostSalesman = wrostSalesman;
 	}
 	
+	@Override
+	public String toString() {
+		return "Report [customersQuantity=" + customersQuantity + ", salesmansQuantity=" + salesmansQuantity
+				+ ", mostExpensiveSaleId=" + mostExpensiveSaleId + ", wrostSalesman=" + wrostSalesman.toString() + "]";
+	}
+
 	// Getters and Setters
 	public long getCustomersQuantity() {
 		return customersQuantity;

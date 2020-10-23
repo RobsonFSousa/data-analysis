@@ -14,18 +14,23 @@ import org.springframework.stereotype.Component;
 
 import br.com.dbc.data.analysis.consts.DefaultFilePath;
 import br.com.dbc.data.analysis.models.FileDBC;
+import br.com.dbc.data.analysis.models.Report;
+import br.com.dbc.data.analysis.models.Salesman;
 import br.com.dbc.data.analysis.services.FileProcessorService;
 import br.com.dbc.data.analysis.services.FileService;
+import br.com.dbc.data.analysis.services.ReportService;
 
 @Component
 public class DbcFileChangeListener implements FileChangeListener {
 	private static Logger logger = LoggerFactory.getLogger(DbcFileChangeListener.class);
 	private static FileProcessorService fileProcessorService;
 	private static FileService fileService;
+	private static ReportService reportService;
 	
-	public DbcFileChangeListener(FileProcessorService fileProcessorService, FileService fileUtil) {
+	public DbcFileChangeListener(FileProcessorService fileProcessorService, FileService fileUtil, ReportService reportService) {
 		DbcFileChangeListener.fileProcessorService = fileProcessorService;
 		DbcFileChangeListener.fileService = fileUtil;
+		DbcFileChangeListener.reportService = reportService;
 	}
 
 	@Override
@@ -45,6 +50,16 @@ public class DbcFileChangeListener implements FileChangeListener {
 						fileProcessed.setPath(cfile.getFile().getAbsolutePath());
 						
 	                	fileService.generateOutputFile(fileProcessed, DefaultFilePath.OUTPUT);
+	                	
+	                	Salesman wrostSalesman = fileService.getWorstSalesman(fileProcessed);
+	                	Long mostExpensiveSaleId = fileService.getMostExpensiveSale(fileProcessed).getId();
+	                	
+	                	Report report = reportService.generateReport(fileProcessed.getCustomers().size(), 
+	                												 fileProcessed.getSalesmans().size(), 
+	                												 mostExpensiveSaleId, 
+	                												 wrostSalesman);
+	                	
+	                	logger.info(report.toString());
 					} catch (IOException e) {
 						logger.error("Error when trying to process the file in path: {}", filePath);
 						e.printStackTrace();

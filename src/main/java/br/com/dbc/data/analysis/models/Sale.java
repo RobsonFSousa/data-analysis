@@ -27,7 +27,7 @@ public class Sale extends Entity {
 	 * Calculate the sale total. 
 	 * @return
 	 */
-	public Double GetTotal() {
+	public Double getTotal() {
 		BigDecimal total = new BigDecimal(0);
 		
 		for (SaleItem saleItem : saleItens) {

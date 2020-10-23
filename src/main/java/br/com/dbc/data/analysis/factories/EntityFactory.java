@@ -40,6 +40,12 @@ public class EntityFactory implements AbstractFactory<Entity>{
 		switch (splitted[0]) {
 			// Salesman
 			case "001":
+				if (splitted[SALESMAN_CPF].isEmpty() || splitted[SALESMAN_NAME].isEmpty() || splitted[SALESMAN_SALARY].isEmpty()) {
+					logger.error("Error trying to read line: {}. Value cannot be empty", line);
+					
+					throw new InvalidParameterException("Invalid line: ".concat(line));
+				}
+						
 				Salesman salesman = new Salesman(splitted[SALESMAN_CPF], splitted[SALESMAN_NAME], new BigDecimal(splitted[SALESMAN_SALARY]));
 				logger.info("{}", salesman.toString());
 				
@@ -47,6 +53,12 @@ public class EntityFactory implements AbstractFactory<Entity>{
 				
 			// Customer
 			case "002":
+				if (splitted[CUSTOMER_CNPJ].isEmpty() || splitted[CUSTOMER_NAME].isEmpty() || splitted[CUSTOMER_BUSINESS_AREA].isEmpty()) {
+					logger.error("Error trying to read line: {}. Value cannot be empty", line);
+					
+					throw new InvalidParameterException("Invalid line: ".concat(line));
+				}
+				
 				Customer customer = new Customer(splitted[CUSTOMER_CNPJ], splitted[CUSTOMER_NAME], splitted[CUSTOMER_BUSINESS_AREA]);
 				logger.info("{}", customer.toString());
 				
@@ -54,6 +66,12 @@ public class EntityFactory implements AbstractFactory<Entity>{
 				
 			// Sale
 			case "003":
+				if (splitted[SALE_ID].isEmpty() || splitted[SALE_ITENS].isEmpty() || splitted[SALE_SALESMAN].isEmpty()) {
+					logger.error("Error trying to read line: {}. Value cannot be empty", line);
+					
+					throw new InvalidParameterException("Invalid line: ".concat(line));
+				}
+				
 				Salesman saleSalesman = new Salesman(null, splitted[SALE_SALESMAN], new BigDecimal(0));
 				
 				List<SaleItem> saleItens = new ArrayList<SaleItem>();

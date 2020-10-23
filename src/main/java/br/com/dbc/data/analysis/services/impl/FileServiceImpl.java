@@ -86,7 +86,7 @@ public class FileServiceImpl implements FileService {
 			BigDecimal total = new BigDecimal(0);
 			
 			for (Sale sale : sales) {
-				total = total.add(new BigDecimal(sale.GetTotal()));
+				total = total.add(new BigDecimal(sale.getTotal()));
 			}
 			totalSales.put(salesmanName, total);
 		}); 
@@ -101,7 +101,7 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public Sale getMostExpensiveSale(FileDBC fileDbc) {
 		List<Sale> clonedSales = new ArrayList<Sale>(fileDbc.getSales());
-		clonedSales.sort(Comparator.comparingDouble(Sale::GetTotal).reversed());
+		clonedSales.sort(Comparator.comparingDouble(Sale::getTotal).reversed());
 		
 		return clonedSales.get(0);
 	}
