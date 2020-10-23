@@ -3,7 +3,7 @@ package br.com.dbc.data.analysis.models;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Sale {
+public class Sale extends Entity {
 
     private long id;
 	private List<SaleItem> saleItens;
@@ -16,6 +16,11 @@ public class Sale {
 		this.id = id;
 		this.saleItens = saleItens;
 		this.salesman = salesman;
+	}
+
+	@Override
+	public String toString() {
+		return "Sale [id=" + id + ", saleItens=" + saleItens.toString() + ", salesman=" + salesman.toString() + "]";
 	}
 
 	/**

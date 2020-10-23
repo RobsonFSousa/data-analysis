@@ -1,6 +1,6 @@
 package br.com.dbc.data.analysis.models;
 
-public class Customer {
+public class Customer extends Entity {
 	
     private String cnpj;
 	private String name;
@@ -11,6 +11,11 @@ public class Customer {
 		this.cnpj = cnpj;
 		this.name = name;
 		this.businessArea = businessArea;
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [cnpj=" + cnpj + ", name=" + name + ", businessArea=" + businessArea + "]";
 	}
 
 	//Getters and Setters

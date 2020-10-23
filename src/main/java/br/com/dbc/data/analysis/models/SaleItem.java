@@ -15,6 +15,11 @@ public class SaleItem {
 		this.price = price;
 	}
 
+	@Override
+	public String toString() {
+		return "SaleItem [id=" + id + ", quantity=" + quantity + ", price=" + price + "]";
+	}
+
 	// Methods
 	public BigDecimal GetTotal() {
 		return quantity.multiply(price);

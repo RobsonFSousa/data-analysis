@@ -2,7 +2,7 @@ package br.com.dbc.data.analysis.models;
 
 import java.math.BigDecimal;
 
-public class Salesman {
+public class Salesman extends Entity {
 	
     private String cpf;
 	private String name;
@@ -13,6 +13,11 @@ public class Salesman {
 		this.cpf = cpf;
 		this.name = name;
 		this.salary = salary;
+	}
+
+	@Override
+	public String toString() {
+		return "Salesman [cpf=" + cpf + ", name=" + name + ", salary=" + salary + "]";
 	}
 
 	@Override
