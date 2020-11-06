@@ -1,12 +1,11 @@
 package br.com.dbc.data.analysis.models;
 
-public class Customer extends Entity {
+public class Customer {
 	
     private String cnpj;
 	private String name;
 	private String businessArea;
 	
-	// Constructor
 	public Customer(String cnpj, String name, String businessArea) {
 		this.cnpj = cnpj;
 		this.name = name;
@@ -18,7 +17,6 @@ public class Customer extends Entity {
 		return "Customer [cnpj=" + cnpj + ", name=" + name + ", businessArea=" + businessArea + "]";
 	}
 
-	//Getters and Setters
 	public String getCnpj() {
 		return cnpj;
 	}

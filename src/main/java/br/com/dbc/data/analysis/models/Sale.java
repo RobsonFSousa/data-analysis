@@ -3,15 +3,12 @@ package br.com.dbc.data.analysis.models;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Sale extends Entity {
+public class Sale {
 
     private long id;
 	private List<SaleItem> saleItens;
 	private Salesman salesman;
 	
-	/** 
-	* Class constructor.
-	*/
 	public Sale(long id, List<SaleItem> saleItens, Salesman salesman) {
 		this.id = id;
 		this.saleItens = saleItens;
@@ -23,10 +20,6 @@ public class Sale extends Entity {
 		return "Sale [id=" + id + ", saleItens=" + saleItens.toString() + ", salesman=" + salesman.toString() + "]";
 	}
 
-	/**
-	 * Calculate the sale total. 
-	 * @return
-	 */
 	public Double getTotal() {
 		BigDecimal total = new BigDecimal(0);
 		
@@ -37,7 +30,6 @@ public class Sale extends Entity {
 		return total.doubleValue();
 	}
 	
-	// Getters and Setters
 	public long getId() {
 		return id;
 	}

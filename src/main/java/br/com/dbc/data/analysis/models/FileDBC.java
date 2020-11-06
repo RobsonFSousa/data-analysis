@@ -9,7 +9,6 @@ public class FileDBC {
 	private List<Customer> customers;
 	private List<Sale> sales;
 
-	// Getters and Setters
 	public String getPath() {
 		return path;
 	}

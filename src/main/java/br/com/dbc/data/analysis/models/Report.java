@@ -7,14 +7,6 @@ public class Report {
 	private long mostExpensiveSaleId;
 	private Salesman wrostSalesman;
 	
-	
-	/**
-	 * Constructor.
-	 * @param customersQuantity
-	 * @param salesmansQuantity
-	 * @param mostExpensiveSaleId
-	 * @param wrostSalesman
-	 */
 	public Report(long customersQuantity, long salesmansQuantity, long mostExpensiveSaleId, Salesman wrostSalesman) {
 		this.customersQuantity = customersQuantity;
 		this.salesmansQuantity = salesmansQuantity;
@@ -28,7 +20,6 @@ public class Report {
 				+ ", mostExpensiveSaleId=" + mostExpensiveSaleId + ", wrostSalesman=" + wrostSalesman.toString() + "]";
 	}
 
-	// Getters and Setters
 	public long getCustomersQuantity() {
 		return customersQuantity;
 	}

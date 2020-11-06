@@ -2,13 +2,12 @@ package br.com.dbc.data.analysis.models;
 
 import java.math.BigDecimal;
 
-public class Salesman extends Entity {
+public class Salesman {
 	
     private String cpf;
 	private String name;
 	private BigDecimal salary;
 	
-	// Constructor
 	public Salesman(String cpf, String name, BigDecimal salary) {
 		this.cpf = cpf;
 		this.name = name;
@@ -37,7 +36,6 @@ public class Salesman extends Entity {
 		return true;
 	}
 	
-	// Getters and Setters
 	public String getCpf() {
 		return cpf;
 	}

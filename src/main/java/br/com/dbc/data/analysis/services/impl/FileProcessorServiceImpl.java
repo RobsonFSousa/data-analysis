@@ -1,5 +1,6 @@
 package br.com.dbc.data.analysis.services.impl;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +13,17 @@ import br.com.dbc.data.analysis.models.FileDBC;
 import br.com.dbc.data.analysis.models.Sale;
 import br.com.dbc.data.analysis.models.Salesman;
 import br.com.dbc.data.analysis.services.FileProcessorService;
-import br.com.dbc.data.analysis.factories.EntityFactory;
+import br.com.dbc.data.analysis.factories.CustomerFactory;
+import br.com.dbc.data.analysis.factories.SaleFactory;
+import br.com.dbc.data.analysis.factories.SalesmanFactory;
 import br.com.dbc.data.analysis.models.Customer;
-import br.com.dbc.data.analysis.models.Entity;
 
 @Service
 public class FileProcessorServiceImpl implements FileProcessorService {
 	private static Logger logger = LoggerFactory.getLogger(FileProcessorServiceImpl.class);
 	
 	@Autowired
-	EntityFactory entityFactory;
+	SalesmanFactory entityFactory;
 	
 	@Override
 	public FileDBC processDBCFile(String filePath, List<String> lines) {
@@ -35,13 +37,23 @@ public class FileProcessorServiceImpl implements FileProcessorService {
 				
 		for (String line : lines) {
 			logger.info("Processing line: {}", line);
-			Entity entity = entityFactory.createInstance(line);
-			if (entity instanceof Salesman)
-				salesmans.add((Salesman) entity);
-			else if (entity instanceof Customer)
-				customers.add((Customer) entity);
-			else if (entity instanceof Sale)
-				sales.add((Sale) entity);
+			String[] splitted = line.replaceAll("(\\r\\n|\\n|\\r)", "").split("ç");
+			
+			switch (splitted[0]) {
+				case "001":
+					addSalesman(salesmans, splitted);
+					break;
+				case "002":
+					addCustomer(customers, splitted);
+					break;
+				case "003":
+					addSale(sales, splitted);
+					break;
+				default:
+					logger.info("Error when trying to read line: {}", line);
+					
+					throw new InvalidParameterException("Invalid line: ".concat(line));
+				}
 		}
 		
 		fileDBC.setSalesmans(salesmans);
@@ -51,6 +63,30 @@ public class FileProcessorServiceImpl implements FileProcessorService {
 		logger.info("File successfully processed: {}", filePath);
 		
 		return fileDBC;
+	}
+	
+	private boolean addSalesman(List<Salesman> salesmans, String[] splitted) {
+		SalesmanFactory salesmanFactory = new SalesmanFactory();
+		Salesman salesman = salesmanFactory.createInstance(splitted);
+		salesmans.add(salesman);
+		logger.info(salesman.toString());
+		return true;
+	}
+	
+	private boolean addCustomer(List<Customer> customers, String[] splitted) {
+		CustomerFactory customerFactory = new CustomerFactory();
+		Customer customer = customerFactory.createInstance(splitted);
+		customers.add(customer);
+		logger.info(customer.toString());
+		return true;
+	}
+	
+	private boolean addSale(List<Sale> sales, String[] splitted) {
+		SaleFactory saleFactory = new SaleFactory();
+		Sale sale = saleFactory.createInstance(splitted);
+		sales.add(sale);
+		logger.info(sale.toString());
+		return true;
 	}
 
 }

@@ -8,7 +8,6 @@ public class SaleItem {
 	private BigDecimal quantity;
 	private BigDecimal price;
 	
-	// Constructor
 	public SaleItem(long id, BigDecimal quantity, BigDecimal price) {
 		this.id = id;
 		this.quantity = quantity;
@@ -20,12 +19,10 @@ public class SaleItem {
 		return "SaleItem [id=" + id + ", quantity=" + quantity + ", price=" + price + "]";
 	}
 
-	// Methods
 	public BigDecimal GetTotal() {
 		return quantity.multiply(price);
 	}
 	
-	//Getters and Setters
 	public long getId() {
 		return id;
 	}
