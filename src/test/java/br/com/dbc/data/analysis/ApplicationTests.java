@@ -63,14 +63,14 @@ class ApplicationTests {
 	@Test
 	void processFilesDBCFromDirectory_ShoudGetMostExpensiveSaleId() throws IOException{
 		FileDBC fileDbc = fileProcessorService.processDBCFile(filePath, fileLines);
-		long mostExpensiveSaleId = fileService.getMostExpensiveSale(fileDbc).getId();
+		long mostExpensiveSaleId = fileProcessorService.getMostExpensiveSale(fileDbc).getId();
 		Assertions.assertEquals(mostExpensiveSaleId, 10);
 	}
 	
 	@Test
 	void processFilesDBCFromDirectory_ShoudGetWorstSalesmanName() throws IOException{
 		FileDBC fileDbc = fileProcessorService.processDBCFile(filePath, fileLines);
-		String worstSalesman = fileService.getWorstSalesman(fileDbc).getName();
+		String worstSalesman = fileProcessorService.getWorstSalesman(fileDbc).getName();
 		Assertions.assertEquals(worstSalesman, "Paulo");
 	}
 	
@@ -78,8 +78,8 @@ class ApplicationTests {
 	void processFilesDBCFromDirectory_ShoudGenerateReport() throws IOException{
 		FileDBC fileDbc = fileProcessorService.processDBCFile(filePath, fileLines);
 		
-		Salesman wrostSalesman = fileService.getWorstSalesman(fileDbc);
-    	Long mostExpensiveSaleId = fileService.getMostExpensiveSale(fileDbc).getId();
+		Salesman wrostSalesman = fileProcessorService.getWorstSalesman(fileDbc);
+    	Long mostExpensiveSaleId = fileProcessorService.getMostExpensiveSale(fileDbc).getId();
 		
 		Report report = reportService.generateReport(fileDbc.getCustomers().size(), fileDbc.getSalesmans().size(), mostExpensiveSaleId, wrostSalesman);
 		
@@ -91,9 +91,12 @@ class ApplicationTests {
 	
 	@Test
 	void processFilesDBCFromDirectory_ShoudGenerateOutputFile() throws IOException {
-		
 		FileDBC fileDBC = fileProcessorService.processDBCFile(filePath, fileLines);
-		boolean reportGenerated = fileService.generateOutputFile(fileDBC, DefaultFilePath.OUTPUT);
+		
+		Salesman wrostSalesman = fileProcessorService.getWorstSalesman(fileDBC);
+    	Long mostExpensiveSaleId = fileProcessorService.getMostExpensiveSale(fileDBC).getId();
+    	
+		boolean reportGenerated = fileService.generateOutputFile(DefaultFilePath.OUTPUT, fileDBC.getCustomers().size(), fileDBC.getSalesmans().size(), mostExpensiveSaleId, wrostSalesman);
 		Assertions.assertTrue(reportGenerated);
 	}
 

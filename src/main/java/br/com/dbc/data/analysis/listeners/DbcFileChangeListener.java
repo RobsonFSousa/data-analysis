@@ -37,29 +37,25 @@ public class DbcFileChangeListener implements FileChangeListener {
 	public void onChange(Set<ChangedFiles> changeSet) {
 		for(ChangedFiles cfiles : changeSet) {
             for(ChangedFile cfile: cfiles.getFiles()) {
-            	// Filter for .dat files only and new files added
                 if(cfile.getFile().getName().toLowerCase().endsWith(".dat") && cfile.getType().equals(Type.ADD)) {
                 	logger.info("File add in path: {}", cfile.getFile().getAbsolutePath());
                 	
-                	List<String> fileLines;
+                	List<String> fileLines = null;
                 	String filePath = cfile.getFile().getAbsolutePath();
 					try {
-						fileLines = fileService.loadFile(filePath);
-						
-						FileDBC fileProcessed = fileProcessorService.processDBCFile(filePath, fileLines);
-						fileProcessed.setPath(cfile.getFile().getAbsolutePath());
-						
-	                	fileService.generateOutputFile(fileProcessed, DefaultFilePath.OUTPUT);
+						FileDBC fileProcessed = processFile(fileLines, filePath);
+						Salesman wrostSalesman = fileProcessorService.getWorstSalesman(fileProcessed);
+	                	Long mostExpensiveSaleId = fileProcessorService.getMostExpensiveSale(fileProcessed).getId();
 	                	
-	                	Salesman wrostSalesman = fileService.getWorstSalesman(fileProcessed);
-	                	Long mostExpensiveSaleId = fileService.getMostExpensiveSale(fileProcessed).getId();
+						fileService.generateOutputFile(DefaultFilePath.OUTPUT, fileProcessed.getCustomers().size(), 
+								 fileProcessed.getSalesmans().size(), 
+								 mostExpensiveSaleId, 
+								 wrostSalesman);
 	                	
-	                	Report report = reportService.generateReport(fileProcessed.getCustomers().size(), 
-	                												 fileProcessed.getSalesmans().size(), 
-	                												 mostExpensiveSaleId, 
-	                												 wrostSalesman);
-	                	
-	                	logger.info(report.toString());
+						printReport(fileProcessed.getCustomers().size(), 
+									fileProcessed.getSalesmans().size(), 
+									mostExpensiveSaleId, 
+									wrostSalesman);
 					} catch (IOException e) {
 						logger.error("Error when trying to process the file in path: {}", filePath);
 						e.printStackTrace();
@@ -68,5 +64,22 @@ public class DbcFileChangeListener implements FileChangeListener {
                 }
             }
         }
+	}
+	
+	private FileDBC processFile(List<String> fileLines, String filePath) throws IOException {
+		FileDBC fileProcessed = new FileDBC();
+		fileLines = fileService.loadFile(filePath);
+		fileProcessorService.processDBCFile(filePath, fileLines);
+		fileProcessed.setPath(filePath);
+		
+		return fileProcessed;
+	}
+	
+	private void printReport(long customersQuantity, long salesmanQuantity, long mostExpensiveSaleId, Salesman wrostSalesman) {
+		Report report = reportService.generateReport(customersQuantity, 
+													 salesmanQuantity, 
+													 mostExpensiveSaleId, 
+													 wrostSalesman);
+		logger.info(report.toString());
 	}
 }
